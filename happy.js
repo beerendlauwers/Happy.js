@@ -14,10 +14,7 @@
             var msgErrorClass = config.classes && config.classes.message || 'unhappyMessage';
             return $('<span id="' + error.id + '" class="' + msgErrorClass + '" role="alert">' + error.message + '</span>');
         }
-        function getError(opts,error) { //Generate error html from either field option, config or default
-            if (isFunction(opts.errorTemplate)) {
-                return opts.errorTemplate(error);
-            }
+        function getError(error) { //Generate error html from either config or default
             if (isFunction(config.errorTemplate)) {
                 return config.errorTemplate(error);
             }
@@ -54,7 +51,7 @@
                 message: opts.message || '',
                 id: selector.slice(1) + '_unhappy'
             };
-            var errorEl = $(error.id).length > 0 ? $(error.id) : getError(opts,error);
+            var errorEl = $(error.id).length > 0 ? $(error.id) : getError(error);
             var handleBlur = function handleBlur() {
                 if (!pauseMessages) {
                     field.testValid();
@@ -68,6 +65,7 @@
                 var val, gotFunc, temp;
                 var el = $(this);
                 var errorTarget = (opts.errorTarget && $(opts.errorTarget)) || el;
+                var errorLocation = (opts.errorLocation && $(opts.errorLocation)) || errorTarget;
                 var error = false;
                 var required = !!el.get(0).attributes.getNamedItem('required') || opts.required;
                 var password = (field.attr('type') === 'password');
@@ -106,6 +104,7 @@
                 }
 
                 if (error) {
+                    errorLocation.after(errorEl);
                     errorTarget.addClass(fieldErrorClass).after(errorEl);
                     return false;
                 } else {
@@ -114,7 +113,7 @@
                     if (temp.parentNode) {
                         temp.parentNode.removeChild(temp);
                     }
-                    errorTarget.removeClass(fieldErrorClass);
+                    errorLocation.removeClass(fieldErrorClass);
                     return true;
                 }
             };
