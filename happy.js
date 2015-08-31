@@ -68,6 +68,7 @@
                 var val, gotFunc, temp;
                 var el = $(this);
                 var errorTarget = (opts.errorTarget && $(opts.errorTarget)) || el;
+                var errorLocation = (opts.errorLocation && $(opts.errorLocation)) || errorTarget;
                 var error = false;
                 var required = !!el.get(0).attributes.getNamedItem('required') || opts.required;
                 var password = (field.attr('type') === 'password');
@@ -106,7 +107,8 @@
                 }
 
                 if (error) {
-                    errorTarget.addClass(fieldErrorClass).after(errorEl);
+                    errorLocation.after(errorEl);
+                    errorTarget.addClass(fieldErrorClass);
                     return false;
                 } else {
                     temp = errorEl.get(0);
