@@ -14,7 +14,10 @@
             var msgErrorClass = config.classes && config.classes.message || 'unhappyMessage';
             return $('<span id="' + error.id + '" class="' + msgErrorClass + '" role="alert">' + error.message + '</span>');
         }
-        function getError(error) { //Generate error html from either config or default
+        function getError(opts,error) { //Generate error html from either field option, config or default
+            if (isFunction(opts.errorTemplate)) {
+                return opts.errorTemplate(error);
+            }
             if (isFunction(config.errorTemplate)) {
                 return config.errorTemplate(error);
             }
@@ -51,7 +54,7 @@
                 message: opts.message || '',
                 id: selector.slice(1) + '_unhappy'
             };
-            var errorEl = $(error.id).length > 0 ? $(error.id) : getError(error);
+            var errorEl = $(error.id).length > 0 ? $(error.id) : getError(opts,error);
             var handleBlur = function handleBlur() {
                 if (!pauseMessages) {
                     field.testValid();
